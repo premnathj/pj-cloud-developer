@@ -30,6 +30,25 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+
+  // GET /filteredimage?image_url={{URL}}
+  // Endpoint to filter an image from a public url.
+  // QUERY PARAMATERS
+  //    image_url: URL of a publicly accessible image
+  // RETURNS
+  //   the filtered image file
+  app.get( "/filteredimage", async ( req, res, next ) => {
+    if(!req.query.image_url)
+      return res.status(400).send({error:"Image URL is requried"});
+
+    try{
+      res.sendFile( await filterImageFromURL(req.query.image_url));
+    }
+    catch(err){
+      next(err)
+    };
+
+  } );
   
   // Root Endpoint
   // Displays a simple message to the user
@@ -37,6 +56,11 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
+  // Global Error Handler
+  app.use((err:any, req:any, res:any, next:any) => {
+    console.error(err.stack); // Error should be logged in a persistent store
+    res.status(500).send('An error occured!');
+  });
 
   // Start the Server
   app.listen( port, () => {
