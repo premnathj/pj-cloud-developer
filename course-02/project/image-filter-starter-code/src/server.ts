@@ -45,8 +45,8 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       res.sendFile( await filterImageFromURL(req.query.image_url));
     }
     catch(err){
-      next(err)
-    };
+      next(err);
+    }
 
   } );
   
